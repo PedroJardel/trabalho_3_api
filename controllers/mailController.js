@@ -4,7 +4,7 @@ import { Usuario } from '../models/Usuario.js'
 
 const main = async (nome, email, hash) => {
     let transporter = nodemailer.createTransport({
-        host: "sandbox,smtp.mailtrap.io",
+        host: "sandbox.smtp.mailtrap.io",
         port: 2525,
         secure: false,
         auth: {

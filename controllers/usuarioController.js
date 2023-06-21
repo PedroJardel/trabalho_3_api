@@ -79,7 +79,7 @@ export const usuarioCreate = async (req, res) => {
 }
 
 export const usuarioAlteraSenha = async (req, res) => {
-    const { hash_alt_senha } = req.params
+    const { hashSenha } = req.params
     const { novaSenha } = req.body
 
     if (!novaSenha) {
@@ -87,12 +87,12 @@ export const usuarioAlteraSenha = async (req, res) => {
         return
     }
     try {
-        const usuario = await Usuario.findOne({ where: { hash_alt_senha } })
+        const usuario = await Usuario.findOne({ where: { hash_alt_senha: hashSenha } })
         if (!usuario) {
             res.status(400).json({ erro: "Usuário não solicitou alteração na senha ou não confirmou o alteração de senha por e-mail" })
             await Log.create({
-                descricao: `Tentativa de alteração de senha na conta do usuario ${usuario.email}`,
-                usuario_id: usuario.id
+                descricao: `Tentativa de alteração de senha.`,
+                usuario_id: 3
             })
             return
         }

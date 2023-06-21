@@ -11,7 +11,7 @@ export const imovelIndex = async (req, res) => {
             const imoveis = await Imovel.findAll();
             res.status(200).json(imoveis)
         } else {
-            const imovel = await Imovel.findAll({ where: { id } });
+            const imovel = await Imovel.findAll({ where: { id },  include: Usuario });
             res.status(200).json(imovel)
         }
     } catch (error) {
@@ -20,11 +20,11 @@ export const imovelIndex = async (req, res) => {
 }
 
 export const imovelCreate = async (req, res) => {
-const { nome, cidade, bairro, preco, area_total, area_construida, dormitorios, banheiros, vagas_garagem } = req.body
+    const { nome, cidade, bairro, preco, area_total, area_construida, dormitorios, banheiros, vagas_garagem } = req.body
     const user_logado_id = req.user_logado_id
 
     if (!nome || !cidade || !bairro || !preco || !area_total || !area_construida || !dormitorios || !banheiros || !vagas_garagem) {
-        console.log(req);
+        console.log(req.body);
         res.status(400).json({ id: 0, msg: "Erro, informe todos os dados" })
         return
     }
