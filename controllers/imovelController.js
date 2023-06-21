@@ -4,30 +4,38 @@ import { Usuario } from "../models/Usuario.js";
 import { sequelize } from "../database/conecta.js";
 
 export const imovelIndex = async (req, res) => {
+    const { id } = req.params
+
     try {
-        const imoveis = await Imovel.findAll({ include: Usuario })
-        res.status(200).json(imoveis)
+        if (!id) {
+            const imoveis = await Imovel.findAll();
+            res.status(200).json(imoveis)
+        } else {
+            const imovel = await Imovel.findAll({ where: { id } });
+            res.status(200).json(imovel)
+        }
     } catch (error) {
         res.status(400).send(error)
     }
 }
 
 export const imovelCreate = async (req, res) => {
-    const { nome, cidade, bairro, preco, area_total, area_construida, dormitorios, banheiros, vagas_garagem, usuario_id } = req.body
+const { nome, cidade, bairro, preco, area_total, area_construida, dormitorios, banheiros, vagas_garagem } = req.body
+    const user_logado_id = req.user_logado_id
 
-    if (!nome || !cidade || !bairro || !preco || !area_total || !area_construida
-        || !dormitorios || !banheiros || !vagas_garagem || !usuario_id) {
-        res.status(404).json({ id: 0, msg: "Erro, informe todos os dados" })
+    if (!nome || !cidade || !bairro || !preco || !area_total || !area_construida || !dormitorios || !banheiros || !vagas_garagem) {
+        console.log(req);
+        res.status(400).json({ id: 0, msg: "Erro, informe todos os dados" })
         return
     }
     const t = await sequelize.transaction()
     try {
         const imovel = await Imovel.create({
-            nome, cidade, bairro, preco, area_total, area_construida, dormitorios, banheiros, vagas_garagem, usuario_id
+            nome, cidade, bairro, preco, area_total, area_construida, dormitorios, banheiros, vagas_garagem, usuario_id: user_logado_id
         }, { transaction: t })
         await Log.create({
             descricao: `Criação do imovel ${nome}`,
-            usuario_id: usuario_id
+            usuario_id: user_logado_id
         }, { transaction: t })
         await t.commit()
         res.status(201).json(imovel)
@@ -39,12 +47,13 @@ export const imovelCreate = async (req, res) => {
 
 export const imovelDestroy = async (req, res) => {
     const { id } = req.params
-    const t = sequelize.transaction()
+    const user_logado_id = req.user_logado_id
+    const t = await sequelize.transaction()
 
     try {
         const imovel = await Imovel.destroy({ where: { id } }, { transaction: t })
         await Log.create({
-            descricao: `Exclusão do imovél ${imovel.nome} - ${id}`,
+            descricao: `Exclusão do imóvel ${imovel.nome} - ${id}`,
             usuario_id: user_logado_id
         }, { transaction: t })
         await t.commit()

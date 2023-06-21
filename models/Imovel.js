@@ -34,18 +34,15 @@ export const Imovel = sequelize.define("imovel", {
     },
     dormitorios: {
         type: DataTypes.INTEGER(2),
-        allowNull: false,
-        defaultValue: 1
+        allowNull: false
     },
     banheiros: {
         type: DataTypes.INTEGER(2),
-        allowNull: false,
-        defaultValue: 1
+        allowNull: false
     },
     vagas_garagem: {
         type: DataTypes.INTEGER(2),
-        allowNull: false,
-        defaultValue: 0
+        allowNull: false
     },
 }, {
     tableName: "imoveis"

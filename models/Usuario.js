@@ -24,6 +24,11 @@ export const Usuario = sequelize.define('usuario', {
     hash_alt_senha: {
         type: DataTypes.STRING(100),
         defaultValue: null
+    },
+    bloqueado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 })
 
