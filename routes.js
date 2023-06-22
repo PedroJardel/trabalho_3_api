@@ -18,7 +18,7 @@ router.get('/imoveis/:id?', imovelIndex)
 router.get('/login', loginUsuario)
 
 router.get('/enviaemail', enviaEmail)
-      .get('/trocasenha/:hash', usuarioAlteraSenha)
+      .get('/trocasenha/:hashSenha', usuarioAlteraSenha)
 
 router.get('/logs/:usuario_id?', logIndex)
 

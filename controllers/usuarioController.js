@@ -81,7 +81,7 @@ export const usuarioCreate = async (req, res) => {
 export const usuarioAlteraSenha = async (req, res) => {
     const { hashSenha } = req.params
     const { novaSenha } = req.body
-
+    
     if (!novaSenha) {
         res.status(404).json({ id: 0, msg: "Erro... Informe os dados" })
         return
@@ -107,7 +107,10 @@ export const usuarioAlteraSenha = async (req, res) => {
         usuario.senha = hash
         usuario.bloqueado = false
         await usuario.save()
-
+        await Log.create({
+            descricao: `Alteração de senha feita com sucesso na conta ${usuario.email}.`,
+            usuario_id: usuario.id
+        })
         res.status(200).json({ msg: "Ok. Senha alterada com sucesso!" })
     } catch (error) {
         res.status(400).send(error)

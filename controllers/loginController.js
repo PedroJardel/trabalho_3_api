@@ -24,6 +24,10 @@ export const loginUsuario = async (req, res) => {
             return
         }
         if (usuario.bloqueado) {
+            await Log.create({
+                descricao: `Tentativa de login feita em conta bloqueada ${email}`,
+                usuaria_id: usuario.id
+            })
             res.status(404).json({ bloqueado: "Sua conta está bloqueada, por favor redefina a senha para desbloquea-la." })
             return
         }
@@ -34,6 +38,10 @@ export const loginUsuario = async (req, res) => {
             },
                 process.env.JWT_KEY,
                 { expiresIn: "1h" })
+            await Log.create({
+                descricao: `Login feito na conta ${email}`,
+                usuaria_id: usuario.id
+            })
             res.status(200).json({ msg: "Ok. Logado!", token })
             tentativaLogin = 1
         } else {
@@ -47,6 +55,10 @@ export const loginUsuario = async (req, res) => {
             } else {
                 usuario.bloqueado = true
                 usuario.save()
+                await Log.create({
+                    descricao: `Usuário da conta ${email} bloqueado`,
+                    usuaria_id: usuario.id
+                })
                 res.status(404).json({ bloqueado: "Sua conta foi bloqueada, por favor redefina a senha para desbloquea-la." })
             }
         }

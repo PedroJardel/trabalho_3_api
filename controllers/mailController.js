@@ -42,6 +42,7 @@ export const enviaEmail = async (req, res) => {
         }
         const hash = md5(usuario.nome + email + Date.now())
         usuario.hash_alt_senha = hash
+        usuario.bloqueado = true
         await usuario.save()
         main(usuario.nome, email, hash).catch(console.error)
         res.status(200).json({ msg: "Ok. E-mail para alteração de senha enviado com sucesso." })
